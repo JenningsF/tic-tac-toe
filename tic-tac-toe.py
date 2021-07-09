@@ -55,13 +55,34 @@ def replay():
 
     return continue_game
 
+# Asks if player wants to play against another player or computer player
+def opponent_choice():
+    choice = "INVALID"
+    acceptable_choices = ['1','2']
+    human_player = False
+
+    # Loop until correct input is given
+    while choice not in acceptable_choices:
+        print("\n1: Human Player")
+        print("2: Computer Player")
+        choice = input("What opponent would you like to face? ")
+
+        if choice not in acceptable_choices:
+            print("Invalid input")
+
+        if choice == '1':
+            human_player = True
+        elif choice == '2':
+            human_player = False
+
+    return human_player
 
 # Display board
 def display_board(board):
     index = 0
 
     # Clear console before displaying board
-    os.system("cls")
+    # os.system("cls")
     # Iteratres through array for printing
     print("\n")
     for num in range(1,len(board)):
@@ -136,8 +157,11 @@ def win_check(board, marker):
     return player_wins
 
 # Randomly decide first player
-def choose_first():
-    return random.randint(1,2)
+def choose_first(human_player):
+    if human_player:
+        return random.randint(1,2)
+    elif not(human_player):
+        return 1
 
 # Returns player markers based on Player 1's selection
 def marker_select():
@@ -168,17 +192,142 @@ def space_check(board, position):
 def full_board_check(board):
     return ' ' in board
 
+# Generates computer's move
+def get_computer_move(current_board, markers):
+    # Contains all columns,rows, and diagonals that win with three of a kind
+    win_conditions = {"column1":[1,4,7], "column2":[2,5,8], "column3":[3,6,9],
+                        "row1":[7,8,9], "row2":[4,5,6], "row3":[1,2,3],
+                        "diagonal1":[7,5,3], "diagonal2":[1,5,9]}
+    corners = [1,3,7,9]
+
+    # # Iterate through current game board and it's win conditions
+    # for n in win_conditions.values():
+    #     print(n)
+    #     try:
+    #         # Choose center position if it is open
+    #         if current_board[5] == ' ':
+    #             return 5
+    #         # Check if open move can win the game
+    #         elif [current_board[n[0]],current_board[n[1]],current_board[n[2]]].count(markers[1]) == 2:
+    #             move = [current_board[n[0]],current_board[n[1]],current_board[n[2]]].index(' ')
+    #             print("1st elif")
+    #             print(move)
+    #             return move
+    #         # Check if open move can block and prevent opponent from winning
+    #         elif [current_board[n[0]],current_board[n[1]],current_board[n[2]]].count(markers[0]) == 2:
+    #             move = [current_board[n[0]],current_board[n[1]],current_board[n[2]]].index(' ')
+    #             print("2d elif")
+    #             print(move)
+    #             return move
+    #         # else:
+    #         #     while True:
+    #         #         move = random.randint(1,9)
+    #         #         if current_board[move] == ' ':
+    #         #             print("Random")
+    #         #             return move
+    #         #             break
+    #     except ValueError:
+    #         pass
+
+    # First Column Check
+    if (current_board[7] == current_board[4] == markers[1]) and current_board[1]== ' ':
+        return 1
+    if (current_board[7] == current_board[1] == markers[1]) and current_board[4]== ' ':
+        return 4
+    if (current_board[4] == current_board[1] == markers[1]) and current_board[7]== ' ':
+        return 7
+
+    # Second Column Check
+    if (current_board[8] == current_board[5] == markers[1]) and current_board[2]== ' ':
+        return 2
+    if (current_board[8] == current_board[2] == markers[1]) and current_board[5]== ' ':
+        return 5
+    if (current_board[5] == current_board[2] == markers[1]) and current_board[8]== ' ':
+        return 8
+
+    # Third Column Check
+    if (current_board[9] == current_board[6] == markers[1]) and current_board[3]== ' ':
+        return 3
+    if (current_board[9] == current_board[3] == markers[1]) and current_board[6]== ' ':
+        return 6
+    if (current_board[6] == current_board[3] == markers[1]) and current_board[9]== ' ':
+        return 9
+
+    # First Row Check
+    if (current_board[7] == current_board[8] == markers[1]) and current_board[9]== ' ':
+        return 9
+    if (current_board[7] == current_board[9] == markers[1]) and current_board[8]== ' ':
+        return 8
+    if (current_board[8] == current_board[9] == markers[1]) and current_board[7]== ' ':
+        return 7
+
+    # Second Row Check
+    if (current_board[4] == current_board[5] == markers[1]) and current_board[6]== ' ':
+        return 6
+    if (current_board[4] == current_board[6] == markers[1]) and current_board[5]== ' ':
+        return 5
+    if (current_board[5] == current_board[6] == markers[1]) and current_board[4]== ' ':
+        return 4
+
+    # Third Row Check
+    if (current_board[1] == current_board[2] == markers[1]) and current_board[3]== ' ':
+        return 3
+    if (current_board[1] == current_board[3] == markers[1]) and current_board[2]== ' ':
+        return 2
+    if (current_board[2] == current_board[3] == markers[1]) and current_board[1]== ' ':
+        return 1
+
+    # Forward Diagonal Check
+    if (current_board[1] == current_board[5] == markers[1]) and current_board[9]== ' ':
+        return 9
+    if (current_board[1] == current_board[9] == markers[1]) and current_board[5]== ' ':
+        return 5
+    if (current_board[5] == current_board[9] == markers[1]) and current_board[1]== ' ':
+        return 1
+
+    # Backward Diagonal Check
+    if (current_board[7] == current_board[5] == markers[1]) and current_board[3]== ' ':
+        return 3
+    if (current_board[7] == current_board[3] == markers[1]) and current_board[5]== ' ':
+        return 5
+    if (current_board[5] == current_board[3] == markers[1]) and current_board[7]== ' ':
+        return 7
+
+    else:
+        while True:
+            move = random.randint(1,9)
+            if current_board[move] == ' ':
+                return move
+                break
+
 # Ask player for next position (1-9) and checks if it's open
-def player_choice(board, turn, markers):
+def player_choice(board, turn, human_opponent, markers):
     free_position = False
 
-    print(f"\nPlayer {turn}'s turn!")
-    while free_position == False:
-        position_choice = player_input()
-        free_position = space_check(board, position_choice)
+    # Player 1 chooses next move
+    if turn == 1:
+        print(f"\nPlayer {turn}'s turn!")
+        while free_position == False:
+            position_choice = player_input()
+            free_position = space_check(board, position_choice)
 
-        if free_position == False:
-            print(f"Position {position_choice} is already taken!")
+            if free_position == False:
+                print(f"Position {position_choice} is already taken!")
+    # Player 2 chooses next move
+    elif turn == 2:
+        # Player 2 is Human Opponent
+        if human_opponent:
+            print(f"\nPlayer {turn}'s turn!")
+
+            while free_position == False:
+                position_choice = player_input()
+                free_position = space_check(board, position_choice)
+
+                if free_position == False:
+                    print(f"Position {position_choice} is already taken!")
+        # Player 2 is Computer Opponent
+        elif not(human_opponent):
+            position_choice = get_computer_move(board, markers)
 
     return position_choice
 
@@ -216,18 +365,20 @@ def run_game():
         game_board = ['#',' ',' ',' ',' ',' ',' ',' ',' ',' ']
         player_markers = ['#','','']
 
+        human_player = opponent_choice()
+
         # Player 1 selects X or O
         player_markers = marker_select()
 
         # Choose random player to go first
-        player_turn = choose_first()
+        player_turn = choose_first(human_player)
 
         while player_win == False:
             # Display board
             display_board(game_board)
 
             # Player chooses play position
-            marker_position = player_choice(game_board, player_turn, player_markers)
+            marker_position = player_choice(game_board, player_turn, human_player, player_markers)
 
             # Place Marker
             place_marker(game_board, player_markers[player_turn], marker_position)
@@ -246,7 +397,7 @@ def run_game():
             # Checks if board is full and in a stalemate
             if not(full_board_check(game_board)):
                 display_board(game_board)
-                print("\nIt's a stalemate! Try again\n")
+                print("\nThe cat's got it! It's a stalemate, try again\n")
                 break
 
     print("\nThank you for playing Tic-tac-toe!\n")
