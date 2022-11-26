@@ -78,29 +78,98 @@ def opponent_choice():
 
     return human_player
 
-# Display board
-def display_board(board):
-    index = 0
+class GameBoard:
+    def __init__(self):
+        self.board = ['#',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        # self.board = ['#','X','X','O','X','X','O','O','O','X']
+    
+    def __str__(self):
+        board_print = "\n"
+        print(board_print)
+        # print("\n")
+        for num in range(1,len(self.board)):
+            # print(f"Step{num - 1}: {board_print}")
+            if num < 4:
+                index = num + 6
+                board_print += f"{self.board[index]} "
+            elif num > 6:
+                index = num - 6
+                board_print += f"{self.board[index]} "
+                # print(self.board[index], end = " ")
+            else:
+                board_print += f"{self.board[num]} "
+                # print(self.board[num], end = " ")
 
-    # Clear console before displaying board
-    # os.system("cls")
-    # Iteratres through array for printing
-    print("\n")
-    for num in range(1,len(board)):
-        if num < 4:
-            index = num + 6
-            print(board[index], end = " ")
-        elif num > 6:
-            index = num - 6
-            print(board[index], end = " ")
-        else:
-            print(board[num], end = " ")
+            if num % 3 != 0:
+                board_print += "| "
+            if num < 9 and num % 3 == 0:
+                board_print += "\n---------\n"
+        board_print += "\n"
+        # print(board_print)
+        return board_print
 
-        if num % 3 != 0:
-            print("|", end = " ")
-        if num < 9 and num % 3 == 0:
-            print("\n----------")
-    print("\n")
+    # Take board, marker ('X' or 'O') and position number and assigns it to the board
+    def place_marker(self, marker, position):
+        self.board[position] = marker
+
+    # Returns whether selected space is available
+    def space_check(self, position):
+        return self.board[position] == " "
+
+    # Checks if board is full
+    def full_board_check(self):
+        return ' ' in self.board
+
+    # Checks if a player has won after marker is placed
+    def win_check(self, marker):
+        player_wins = False
+
+        # Vertical Checks
+        if self.board[7] == self.board[4] == self.board[1] == marker:
+            player_wins = True
+        elif self.board[8] == self.board[5] == self.board[2] == marker:
+            player_wins = True
+        elif self.board[9] == self.board[6] == self.board[3] == marker:
+            player_wins = True
+
+        # Horizontal Checks
+        if self.board[7] == self.board[8] == self.board[9] == marker:
+            player_wins = True
+        elif self.board[4] == self.board[5] == self.board[6] == marker:
+            player_wins = True
+        elif self.board[1] == self.board[2] == self.board[3] == marker:
+            player_wins = True
+        # Diagonal Checks
+        if self.board[7] == self.board[5] == self.board[3] == marker:
+            player_wins = True
+        elif self.board[9] == self.board[5] == self.board[1] == marker:
+            player_wins = True
+
+        return player_wins
+
+# # Display board
+# def display_board(board):
+#     index = 0
+
+#     # Clear console before displaying board
+#     # os.system("cls")
+#     # Iteratres through array for printing
+#     print("\n")
+#     for num in range(1,len(board)):
+#         if num < 4:
+#             index = num + 6
+#             print(board[index], end = " ")
+#         elif num > 6:
+#             index = num - 6
+#             print(board[index], end = " ")
+#         else:
+#             print(board[num], end = " ")
+
+#         if num % 3 != 0:
+#             print("|", end = " ")
+#         if num < 9 and num % 3 == 0:
+#             print("\n----------")
+#     print("\n")
 
 # Takes player input and assign marker as 'X' or 'O'.
 def player_input():
@@ -125,37 +194,37 @@ def player_input():
                 within_range = False
     return int(choice)
 
-# Take board, marker ('X' or 'O') and position number and assigns it to the board
-def place_marker(board, marker, position):
-    board[position] = marker
+# # Take board, marker ('X' or 'O') and position number and assigns it to the board
+# def place_marker(board, marker, position):
+#     board[position] = marker
 
-# Checks if a player has won after marker is placed
-def win_check(board, marker):
-    player_wins = False
+# # Checks if a player has won after marker is placed
+# def win_check(board, marker):
+#     player_wins = False
 
-    # Vertical Checks
-    if board[7] == board[4] == board[1] == marker:
-        player_wins = True
-    elif board[8] == board[5] == board[2] == marker:
-        player_wins = True
-    elif board[9] == board[6] == board[3] == marker:
-        player_wins = True
+#     # Vertical Checks
+#     if board[7] == board[4] == board[1] == marker:
+#         player_wins = True
+#     elif board[8] == board[5] == board[2] == marker:
+#         player_wins = True
+#     elif board[9] == board[6] == board[3] == marker:
+#         player_wins = True
 
-    # Horizontal Checks
-    if board[7] == board[8] == board[9] == marker:
-        player_wins = True
-    elif board[4] == board[5] == board[6] == marker:
-        player_wins = True
-    elif board[1] == board[2] == board[3] == marker:
-        player_wins = True
+#     # Horizontal Checks
+#     if board[7] == board[8] == board[9] == marker:
+#         player_wins = True
+#     elif board[4] == board[5] == board[6] == marker:
+#         player_wins = True
+#     elif board[1] == board[2] == board[3] == marker:
+#         player_wins = True
 
-    # Diagonal Checks
-    if board[7] == board[5] == board[3] == marker:
-        player_wins = True
-    elif board[9] == board[5] == board[1] == marker:
-        player_wins = True
+#     # Diagonal Checks
+#     if board[7] == board[5] == board[3] == marker:
+#         player_wins = True
+#     elif board[9] == board[5] == board[1] == marker:
+#         player_wins = True
 
-    return player_wins
+#     return player_wins
 
 # Randomly decide first player
 def choose_first(human_player):
@@ -178,7 +247,7 @@ def marker_select():
             print("Invalid marker selection")
 
     # markers[1] will be Player 1's selection; markers[2] is Player 2's or Computer Player's marker
-        if marker_selection == 'X':
+        elif marker_selection == 'X':
             markers[1] = marker_selection
             markers[2] = 'O'
         elif marker_selection == 'O':
@@ -186,13 +255,13 @@ def marker_select():
             markers[2] = 'X'
     return markers
 
-# Returns whether selected space is available
-def space_check(board, position):
-    return board[position] == " "
+# # Returns whether selected space is available
+# def space_check(board, position):
+#     return board[position] == " "
 
-# Checks if board is full
-def full_board_check(board):
-    return ' ' in board
+# # Checks if board is full
+# def full_board_check(board):
+#     return ' ' in board
 
 # Generates computer's move
 def get_computer_move(current_board, markers):
@@ -208,7 +277,7 @@ def get_computer_move(current_board, markers):
     move = 0
     
     # Choose center position if it is open
-    if current_board[5] == ' ':
+    if current_board.board[5] == ' ':
         move = 5
         print(f"Computer Selected move: {move}")
         return move
@@ -218,8 +287,8 @@ def get_computer_move(current_board, markers):
         # Iterate through win_conditions and check if open move can win the game
         for n in win_conditions.values():
             try:
-                if [current_board[n[0]],current_board[n[1]],current_board[n[2]]].count(computer_marker) == 2:
-                    move = n[[current_board[n[0]],current_board[n[1]],current_board[n[2]]].index(' ')]
+                if [current_board.board[n[0]],current_board.board[n[1]],current_board.board[n[2]]].count(computer_marker) == 2:
+                    move = n[[current_board.board[n[0]],current_board.board[n[1]],current_board.board[n[2]]].index(' ')]
                     print(f"Computer Selected move: {move}")
                     return move
             except ValueError:
@@ -228,8 +297,8 @@ def get_computer_move(current_board, markers):
         # Iterate through win_conditions and check if open move can block opponent from winning
         for n in win_conditions.values():
             try:
-                if [current_board[n[0]],current_board[n[1]],current_board[n[2]]].count(player_marker) == 2:
-                    move = n[[current_board[n[0]],current_board[n[1]],current_board[n[2]]].index(' ')]
+                if [current_board.board[n[0]],current_board.board[n[1]],current_board.board[n[2]]].count(player_marker) == 2:
+                    move = n[[current_board.board[n[0]],current_board.board[n[1]],current_board.board[n[2]]].index(' ')]
                     print(f"Computer Selected move: {move}")
                     return move
             except ValueError:
@@ -238,7 +307,7 @@ def get_computer_move(current_board, markers):
     # If center spot is taken and there are no winning or blocking moves, select random open space
     while True:
         move = random.randint(1,9)
-        if current_board[move] == ' ':
+        if current_board.board[move] == ' ':
             print(f"Computer Selected move: {move}")
             return move
             break
@@ -252,7 +321,7 @@ def player_choice(board, turn, human_opponent, markers):
         print(f"\nPlayer {turn}'s turn!")
         while free_position == False:
             position_choice = player_input()
-            free_position = space_check(board, position_choice)
+            free_position = board.space_check(position_choice)
 
             if free_position == False:
                 print(f"Position {position_choice} is already taken!")
@@ -264,7 +333,7 @@ def player_choice(board, turn, human_opponent, markers):
 
             while free_position == False:
                 position_choice = player_input()
-                free_position = space_check(board, position_choice)
+                free_position = board.space_check(position_choice)
 
                 if free_position == False:
                     print(f"Position {position_choice} is already taken!")
@@ -312,7 +381,8 @@ def run_game():
     # Check ready to play OR continue to play
     while replay():
         player_win = False
-        game_board = ['#',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        # game_board = ['#',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        game_board = GameBoard()
         player_markers = ['#','','']
 
         # Asks for human or computer opponent
@@ -329,7 +399,9 @@ def run_game():
 
         while player_win == False:
             # Display board
-            display_board(game_board)
+            os.system("cls")
+            print(game_board)
+            # print(game_board.board)
 
             # Simulate "thinking" when playing computer player
             if not(human_player) and player_turn == 2:
@@ -339,16 +411,16 @@ def run_game():
             marker_position = player_choice(game_board, player_turn, human_player, player_markers)
 
             # Place Marker
-            place_marker(game_board, player_markers[player_turn], marker_position)            
+            game_board.place_marker(player_markers[player_turn], marker_position)            
 
             # Check if a player has won
-            player_win = win_check(game_board, player_markers[player_turn])
+            player_win =game_board.win_check(player_markers[player_turn])
 
             # If there's not a stalemate or no one has won, then next player switches
             if player_win == False:
                 player_turn = switch_players(player_turn)
             elif player_win == True:
-                display_board(game_board)
+                print(game_board)
                 if not(human_player) and player_turn == 2:
                     print("Computer wins!\n")
                 else:
@@ -356,8 +428,8 @@ def run_game():
                 break
 
             # Checks if board is full and in a stalemate
-            if not(full_board_check(game_board)):
-                display_board(game_board)
+            if not(game_board.full_board_check()):
+                print(game_board)
                 print("\nThe cat's got it! It's a stalemate, try again\n")
                 break
 
