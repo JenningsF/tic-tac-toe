@@ -6,9 +6,7 @@
 
 
 import os
-import game_logic
-import gameboard
-import player
+from  modules import game_logic, gameboard, player
 
 # Display game header
 def display_header():
